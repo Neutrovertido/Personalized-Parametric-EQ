@@ -94,12 +94,35 @@ body {
   min-width: 250px;
 }
 
+.secondary-button {
+  padding: 14px 40px;
+  font-size: 1.05em;
+  background: transparent;
+  color: var(--text-primary);
+  border: 2px solid var(--accent);
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  min-width: 250px;
+}
+
 .primary-button:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 16px rgba(178, 108, 255, 0.4);
 }
 
+.secondary-button:hover {
+  transform: translateY(-2px);
+  background: rgba(178, 108, 255, 0.12);
+  box-shadow: 0 8px 16px rgba(178, 108, 255, 0.25);
+}
+
 .primary-button:active {
+  transform: translateY(0);
+}
+
+.secondary-button:active {
   transform: translateY(0);
 }
 

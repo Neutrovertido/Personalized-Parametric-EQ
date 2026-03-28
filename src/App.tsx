@@ -6,6 +6,7 @@ import type { EQProfile } from './services/filterMath';
 import QuizFlow from './components/QuizFlow';
 import EQControlPanel from './components/EQControlPanel';
 import MediaControlBar from './components/MediaControlBar';
+import defaultAudioSample from './audio/Yoru Lackey.mp3';
 import './App.css';
 
 type AppState = 'sample-select' | 'quiz' | 'results';
@@ -32,6 +33,25 @@ function App() {
         console.error('Failed to load audio:', error);
         alert('Failed to load audio file. Please try another file.');
       }
+    }
+  };
+
+  // Handle loading of bundled default sample
+  const handleUseDefaultSample = async () => {
+    try {
+      const response = await fetch(defaultAudioSample);
+      if (!response.ok) {
+        throw new Error('Unable to fetch default audio sample');
+      }
+
+      const arrayBuffer = await response.arrayBuffer();
+      await audioEngine.loadAudio(arrayBuffer);
+      setAudioLoaded(true);
+      setSelectedFileName('Yoru Lackey.mp3 (Default Sample)');
+      handleStartQuiz();
+    } catch (error) {
+      console.error('Failed to load default sample:', error);
+      alert('Failed to load the default sample. Please try uploading your own file.');
     }
   };
 
@@ -84,7 +104,7 @@ function App() {
           <div className="container">
             <h1>Parametric EQ Finder</h1>
             <p>Discover your ideal 10-band EQ through an interactive quiz</p>
-            <SampleSelector onSelect={handleAudioSelect} />
+            <SampleSelector onSelect={handleAudioSelect} onUseDefaultSample={handleUseDefaultSample} />
           </div>
         </div>
       )}
@@ -116,14 +136,13 @@ function App() {
 
 interface SampleSelectorProps {
   onSelect: (file: File | null) => void;
+  onUseDefaultSample: () => Promise<void>;
 }
 
-function SampleSelector({ onSelect }: SampleSelectorProps) {
+function SampleSelector({ onSelect, onUseDefaultSample }: SampleSelectorProps) {
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
-  // Load default sample (placeholder - we'll use user's file for now)
-  const handleLoadDefault = async () => {
-    // For now, ask user to upload
+  const handleUploadClick = () => {
     fileInputRef.current?.click();
   };
 
@@ -137,7 +156,10 @@ function SampleSelector({ onSelect }: SampleSelectorProps) {
   return (
     <div className="sample-selector">
       <div className="button-group">
-        <button className="primary-button" onClick={handleLoadDefault}>
+        <button className="secondary-button" onClick={onUseDefaultSample}>
+          🎵 Use Default Sample
+        </button>
+        <button className="primary-button" onClick={handleUploadClick}>
           📁 Upload Audio File
         </button>
         <input
@@ -149,7 +171,7 @@ function SampleSelector({ onSelect }: SampleSelectorProps) {
         />
       </div>
       <p className="info-text">
-        Supported formats: MP3, WAV, OGG, FLAC, M4A, and more
+        No file on hand? Use the default sample above, or upload MP3/WAV/OGG/FLAC/M4A.
       </p>
     </div>
   );
