@@ -5,6 +5,7 @@ import { DEFAULT_EQ_PROFILE } from './services/filterMath';
 import type { EQProfile } from './services/filterMath';
 import QuizFlow from './components/QuizFlow';
 import EQControlPanel from './components/EQControlPanel';
+import MediaControlBar from './components/MediaControlBar';
 import './App.css';
 
 type AppState = 'sample-select' | 'quiz' | 'results';
@@ -15,6 +16,7 @@ function App() {
   const [answers, setAnswers] = useState<number[]>([]);
   const [eqProfile, setEqProfile] = useState<EQProfile>(DEFAULT_EQ_PROFILE);
   const [audioLoaded, setAudioLoaded] = useState(false);
+  const [selectedFileName, setSelectedFileName] = useState<string | null>(null);
   const audioEngine = getAudioEngine();
 
   // Handle audio file selection
@@ -23,6 +25,7 @@ function App() {
       try {
         await audioEngine.loadAudioFromFile(file);
         setAudioLoaded(true);
+        setSelectedFileName(file.name);
         // Auto-start quiz
         handleStartQuiz();
       } catch (error) {
@@ -71,6 +74,7 @@ function App() {
     setAnswers([]);
     setEqProfile(DEFAULT_EQ_PROFILE);
     setAudioLoaded(false);
+    setSelectedFileName(null);
   };
 
   return (
@@ -104,6 +108,8 @@ function App() {
           </div>
         </div>
       )}
+
+      <MediaControlBar fileName={selectedFileName} />
     </div>
   );
 }

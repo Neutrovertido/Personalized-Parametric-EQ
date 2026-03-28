@@ -388,6 +388,57 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
   },
 ];
 
+function clamp(value: number, min: number, max: number): number {
+  return Math.min(max, Math.max(min, value));
+}
+
+/**
+ * Automatically assign filter type + Q factor from the derived gain contour.
+ * This mimics how a human usually starts broad (shelves/low Q) and narrows
+ * only where local peaks/dips need more surgical shaping.
+ */
+function autoAssignQAndFilters(profile: EQProfile): void {
+  const gains = profile.bands.map((band) => band.gainDb);
+
+  // Broad low/high tilt detection to decide shelf usage on the extremes.
+  const lowAvg = (gains[0] + gains[1] + gains[2]) / 3;
+  const lowMidAvg = (gains[3] + gains[4] + gains[5]) / 3;
+  const highAvg = (gains[7] + gains[8] + gains[9]) / 3;
+  const highMidAvg = (gains[4] + gains[5] + gains[6]) / 3;
+
+  const lowTilt = lowAvg - lowMidAvg;
+  const highTilt = highAvg - highMidAvg;
+
+  for (let i = 0; i < profile.bands.length; i++) {
+    const band = profile.bands[i];
+    const gain = Math.abs(band.gainDb);
+
+    const prev = i > 0 ? gains[i - 1] : gains[i];
+    const next = i < gains.length - 1 ? gains[i + 1] : gains[i];
+    const localProminence = Math.abs(gains[i] - (prev + next) / 2);
+
+    // Filter type selection
+    if (i === 0) {
+      band.filterType = Math.abs(lowTilt) >= 0.8 ? 'LSC' : 'PK';
+    } else if (i === profile.bands.length - 1) {
+      band.filterType = Math.abs(highTilt) >= 0.8 ? 'HSC' : 'PK';
+    } else {
+      band.filterType = 'PK';
+    }
+
+    // Q factor selection
+    if (band.filterType === 'PK') {
+      // Narrower Q when local feature is sharper, broader when tilt-like.
+      const q = 0.55 + 0.45 * localProminence + 0.08 * gain;
+      band.q = Math.round(clamp(q, 0.4, 4.5) * 100) / 100;
+    } else {
+      // Shelves are usually broader by default.
+      const shelfQ = 0.55 + 0.05 * gain;
+      band.q = Math.round(clamp(shelfQ, 0.45, 1.2) * 100) / 100;
+    }
+  }
+}
+
 /**
  * Derive EQ profile from quiz answers
  * @param answers Array of answer indices (0-3 for A-D) for each question
@@ -420,6 +471,9 @@ export function deriveEQFromQuiz(answers: number[]): EQProfile {
     band.gainDb = Math.round(band.gainDb * 10) / 10;
   }
   resultProfile.preamp = Math.round(resultProfile.preamp * 10) / 10;
+
+  // Auto-design filter topology and Q after quiz, before manual fine tuning.
+  autoAssignQAndFilters(resultProfile);
 
   return resultProfile;
 }

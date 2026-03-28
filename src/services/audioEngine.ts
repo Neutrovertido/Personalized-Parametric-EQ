@@ -15,6 +15,8 @@ export class AudioEngine {
   private audioBuffer: AudioBuffer | null = null;
   private currentProfile: EQProfile = structuredClone(DEFAULT_EQ_PROFILE);
   private isPlaying = false;
+  private playbackStartTime = 0;
+  private playbackOffset = 0;
 
   constructor() {
     this.audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
@@ -48,6 +50,9 @@ export class AudioEngine {
   async loadAudio(arrayBuffer: ArrayBuffer): Promise<void> {
     try {
       this.audioBuffer = await this.audioContext.decodeAudioData(arrayBuffer);
+      this.playbackOffset = 0;
+      this.playbackStartTime = this.audioContext.currentTime;
+      this.isPlaying = false;
     } catch (error) {
       console.error('Failed to decode audio:', error);
       throw error;
@@ -67,16 +72,38 @@ export class AudioEngine {
    */
   play(): void {
     if (!this.audioBuffer) return;
-    
-    // Stop any existing source
-    this.stop();
-    
+
+    // Resume from last paused position.
+    if (this.isPlaying) {
+      return;
+    }
+
+    const duration = this.audioBuffer.duration;
+    const offset = duration > 0 ? this.playbackOffset % duration : 0;
+
     this.audioSource = this.audioContext.createBufferSource();
     this.audioSource.buffer = this.audioBuffer;
     this.audioSource.loop = true;
     this.audioSource.connect(this.preampGain);
-    this.audioSource.start();
+    this.audioSource.start(0, offset);
+
+    this.playbackStartTime = this.audioContext.currentTime - offset;
     this.isPlaying = true;
+  }
+
+  /**
+   * Pause audio playback while preserving position
+   */
+  pause(): void {
+    if (!this.audioSource || !this.audioBuffer) {
+      return;
+    }
+
+    this.playbackOffset = this.getCurrentTime();
+    this.audioSource.stop();
+    this.audioSource.disconnect();
+    this.audioSource = null;
+    this.isPlaying = false;
   }
 
   /**
@@ -88,6 +115,8 @@ export class AudioEngine {
       this.audioSource.disconnect();
       this.audioSource = null;
     }
+    this.playbackOffset = 0;
+    this.playbackStartTime = this.audioContext.currentTime;
     this.isPlaying = false;
   }
 
@@ -96,6 +125,68 @@ export class AudioEngine {
    */
   getIsPlaying(): boolean {
     return this.isPlaying;
+  }
+
+  /**
+   * Check whether an audio file has been loaded
+   */
+  hasAudioLoaded(): boolean {
+    return this.audioBuffer !== null;
+  }
+
+  /**
+   * Total audio duration in seconds
+   */
+  getDuration(): number {
+    return this.audioBuffer?.duration ?? 0;
+  }
+
+  /**
+   * Current playback position in seconds
+   */
+  getCurrentTime(): number {
+    if (!this.audioBuffer) {
+      return 0;
+    }
+
+    const duration = this.audioBuffer.duration;
+    if (duration <= 0) {
+      return 0;
+    }
+
+    if (this.isPlaying) {
+      const elapsed = this.audioContext.currentTime - this.playbackStartTime;
+      return ((elapsed % duration) + duration) % duration;
+    }
+
+    return Math.min(this.playbackOffset, duration);
+  }
+
+  /**
+   * Seek to a playback position in seconds
+   */
+  seek(seconds: number): void {
+    if (!this.audioBuffer) {
+      return;
+    }
+
+    const duration = this.audioBuffer.duration;
+    const target = Math.min(Math.max(seconds, 0), duration);
+    this.playbackOffset = target;
+
+    if (this.isPlaying) {
+      if (this.audioSource) {
+        this.audioSource.stop();
+        this.audioSource.disconnect();
+      }
+
+      this.audioSource = this.audioContext.createBufferSource();
+      this.audioSource.buffer = this.audioBuffer;
+      this.audioSource.loop = true;
+      this.audioSource.connect(this.preampGain);
+      this.audioSource.start(0, target);
+      this.playbackStartTime = this.audioContext.currentTime - target;
+    }
   }
 
   /**

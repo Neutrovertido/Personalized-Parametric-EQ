@@ -31,6 +31,7 @@ body {
   width: 100%;
   min-height: 100vh;
   background-color: var(--bg-primary);
+  padding-bottom: 144px;
 }
 
 .container {
@@ -149,4 +150,10 @@ button {
 button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+@media (max-width: 900px) {
+  .app {
+    padding-bottom: 250px;
+  }
 }
