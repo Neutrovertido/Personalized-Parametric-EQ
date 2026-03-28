@@ -95,10 +95,10 @@ export default function MediaControlBar({ fileName }: MediaControlBarProps) {
 
       <div className="media-transport">
         <button type="button" onClick={togglePlay} disabled={!hasAudio}>
-          {isPlaying ? 'Pause' : 'Play'}
+          {isPlaying ? '⏸ Pause' : '▶ Play'}
         </button>
         <button type="button" onClick={stopPlayback} disabled={!hasAudio}>
-          Stop
+          ⏹ Stop
         </button>
       </div>
 
