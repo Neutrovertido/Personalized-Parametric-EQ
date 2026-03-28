@@ -70,8 +70,8 @@
 }
 
 .media-transport button:hover:enabled {
-  border-color: #4dd0e1;
-  color: #4dd0e1;
+  border-color: #b26cff;
+  color: #b26cff;
 }
 
 .media-transport button:disabled {
@@ -96,8 +96,8 @@
 }
 
 .status-dot.playing {
-  background: #4dd0e1;
-  box-shadow: 0 0 0 6px rgba(77, 208, 225, 0.12);
+  background: #b26cff;
+  box-shadow: 0 0 0 6px rgba(178, 108, 255, 0.16);
 }
 
 .media-track-meta {

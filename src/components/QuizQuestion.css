@@ -45,15 +45,15 @@
 
 .variation-card:hover {
   border-color: var(--accent);
-  background-color: rgba(77, 208, 225, 0.05);
+  background-color: rgba(178, 108, 255, 0.07);
   transform: translateY(-4px);
-  box-shadow: 0 8px 16px rgba(77, 208, 225, 0.2);
+  box-shadow: 0 8px 16px rgba(178, 108, 255, 0.2);
 }
 
 .variation-card.selected {
   border-color: var(--accent);
-  background-color: rgba(77, 208, 225, 0.15);
-  box-shadow: 0 8px 24px rgba(77, 208, 225, 0.3);
+  background-color: rgba(178, 108, 255, 0.15);
+  box-shadow: 0 8px 24px rgba(178, 108, 255, 0.3);
 }
 
 .variation-card.playing {
@@ -62,10 +62,10 @@
 
 @keyframes pulse {
   0%, 100% {
-    box-shadow: 0 8px 16px rgba(77, 208, 225, 0.2);
+    box-shadow: 0 8px 16px rgba(178, 108, 255, 0.2);
   }
   50% {
-    box-shadow: 0 8px 24px rgba(77, 208, 225, 0.4);
+    box-shadow: 0 8px 24px rgba(178, 108, 255, 0.4);
   }
 }
 

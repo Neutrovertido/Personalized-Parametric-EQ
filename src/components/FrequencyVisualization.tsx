@@ -101,7 +101,7 @@ export default function FrequencyVisualization({
     ctx.stroke();
 
     // Draw frequency response curve
-    ctx.strokeStyle = '#4dd0e1';
+    ctx.strokeStyle = '#b26cff';
     ctx.lineWidth = 2;
     ctx.beginPath();
 

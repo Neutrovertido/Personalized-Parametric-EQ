@@ -15,9 +15,9 @@ html, body, #root {
   --bg-tertiary: #2a2a2a;
   --text-primary: #ffffff;
   --text-secondary: #b0b0b0;
-  --accent: #4dd0e1;
-  --accent-dark: #0097a7;
-  --accent-light: #80deea;
+  --accent: #b26cff;
+  --accent-dark: #7a3cff;
+  --accent-light: #d3a5ff;
   --border: #333333;
   --success: #4caf50;
   --warning: #ff9800;

@@ -49,7 +49,7 @@
 
 .play-button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 16px rgba(77, 208, 225, 0.4);
+  box-shadow: 0 8px 16px rgba(178, 108, 255, 0.4);
 }
 
 .play-button.playing {
@@ -147,7 +147,7 @@
 
 .band-control:hover {
   border-color: var(--accent);
-  background-color: rgba(77, 208, 225, 0.05);
+  background-color: rgba(178, 108, 255, 0.07);
 }
 
 .band-header {
@@ -305,7 +305,7 @@ input[type='range']::-webkit-slider-thumb {
 
 input[type='range']::-webkit-slider-thumb:hover {
   transform: scale(1.2);
-  box-shadow: 0 0 10px rgba(77, 208, 225, 0.5);
+  box-shadow: 0 0 10px rgba(178, 108, 255, 0.5);
 }
 
 input[type='range']::-moz-range-thumb {
@@ -320,7 +320,7 @@ input[type='range']::-moz-range-thumb {
 
 input[type='range']::-moz-range-thumb:hover {
   transform: scale(1.2);
-  box-shadow: 0 0 10px rgba(77, 208, 225, 0.5);
+  box-shadow: 0 0 10px rgba(178, 108, 255, 0.5);
 }
 
 input[type='range']:disabled {
