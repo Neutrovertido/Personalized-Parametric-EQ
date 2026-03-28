@@ -81,25 +81,27 @@ export function calculateMagnitude(
   frequencyHz: number,
   sampleRate: number
 ): number {
+  if (!settings.enabled) {
+    return 0;
+  }
+
   const coeffs = calculateBiquadCoefficients(settings, sampleRate);
   const w = (2 * Math.PI * frequencyHz) / sampleRate;
   const cos_w = Math.cos(w);
+  const sin_w = Math.sin(w);
+  const cos_2w = Math.cos(2 * w);
+  const sin_2w = Math.sin(2 * w);
 
-  const numerator =
-    Math.pow(coeffs.b0, 2) +
-    Math.pow(coeffs.b1, 2) +
-    Math.pow(coeffs.b2, 2) +
-    2 * coeffs.b0 * coeffs.b2 * cos_w * 2 -
-    2 * coeffs.b1 * (coeffs.b0 + coeffs.b2) * cos_w;
+  // Evaluate H(e^jw) = (b0 + b1 z^-1 + b2 z^-2) / (a0 + a1 z^-1 + a2 z^-2), z = e^jw
+  const numReal = coeffs.b0 + coeffs.b1 * cos_w + coeffs.b2 * cos_2w;
+  const numImag = -(coeffs.b1 * sin_w + coeffs.b2 * sin_2w);
+  const denReal = coeffs.a0 + coeffs.a1 * cos_w + coeffs.a2 * cos_2w;
+  const denImag = -(coeffs.a1 * sin_w + coeffs.a2 * sin_2w);
 
-  const denominator =
-    1 +
-    Math.pow(coeffs.a1, 2) +
-    Math.pow(coeffs.a2, 2) +
-    2 * coeffs.a2 * cos_w * 2 -
-    2 * coeffs.a1 * (1 + coeffs.a2) * cos_w;
+  const numMagSq = numReal * numReal + numImag * numImag;
+  const denMagSq = denReal * denReal + denImag * denImag;
+  const magnitude = Math.sqrt(numMagSq / Math.max(denMagSq, 1e-20));
 
-  const magnitude = Math.sqrt(numerator / denominator);
   return 20 * Math.log10(Math.max(magnitude, 1e-10)); // Convert to dB
 }
 
@@ -130,7 +132,7 @@ export function generateFrequencyResponse(
 ): number[] {
   const response: number[] = [];
   const minFreq = 20;
-  const maxFreq = sampleRate / 2;
+  const maxFreq = Math.min(sampleRate / 2, 20000);
   const logMinFreq = Math.log10(minFreq);
   const logMaxFreq = Math.log10(maxFreq);
 

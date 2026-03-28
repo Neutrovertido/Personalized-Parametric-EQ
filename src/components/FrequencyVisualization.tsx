@@ -42,6 +42,7 @@ export default function FrequencyVisualization({
     const minDb = -24;
     const maxDb = 24;
     const dbRange = maxDb - minDb;
+    const maxGraphFreq = Math.min(sampleRate / 2, 20000);
 
     // Background
     ctx.fillStyle = '#0a0a0a';
@@ -69,9 +70,10 @@ export default function FrequencyVisualization({
     // Vertical grid (frequency lines, logarithmic)
     const freqs = [20, 50, 100, 200, 500, 1000, 2000, 5000, 10000, 20000];
     for (const freq of freqs) {
+      if (freq > maxGraphFreq) continue;
       const logFreq = Math.log10(freq);
       const logMin = Math.log10(20);
-      const logMax = Math.log10(sampleRate / 2);
+      const logMax = Math.log10(maxGraphFreq);
       const x = padding + ((logFreq - logMin) / (logMax - logMin)) * graphWidth;
 
       ctx.strokeStyle = '#222';
@@ -90,7 +92,7 @@ export default function FrequencyVisualization({
     }
 
     // 0dB reference line
-    const centerY = padding + (maxDb / 2) * (graphHeight / dbRange);
+    const centerY = padding + (maxDb - 0) * (graphHeight / dbRange);
     ctx.strokeStyle = '#444';
     ctx.lineWidth = 2;
     ctx.beginPath();
@@ -104,11 +106,11 @@ export default function FrequencyVisualization({
     ctx.beginPath();
 
     const logMin = Math.log10(20);
-    const logMax = Math.log10(sampleRate / 2);
+    const logMax = Math.log10(maxGraphFreq);
 
     for (let i = 0; i < frequencyResponse.length; i++) {
       const logFreq = logMin + (i / (frequencyResponse.length - 1)) * (logMax - logMin);
-      const magnitude = frequencyResponse[i];
+      const magnitude = Math.max(minDb, Math.min(maxDb, frequencyResponse[i]));
 
       const x = padding + ((logFreq - logMin) / (logMax - logMin)) * graphWidth;
       const y = padding + (maxDb - magnitude) * (graphHeight / dbRange);
