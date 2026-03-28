@@ -65,6 +65,35 @@ export default function EQControlPanel({ profile, onUpdate }: EQControlPanelProp
           </div>
         </div>
 
+        {/* User-friendly manual table */}
+        <div className="manual-table-section">
+          <h3>Filter Settings</h3>
+          <div className="manual-table-wrapper">
+            <table className="manual-table" aria-label="Filter settings table">
+              <thead>
+                <tr>
+                  <th>Band</th>
+                  <th>Filter Type</th>
+                  <th>Frequency</th>
+                  <th>Gain</th>
+                  <th>Q-Factor</th>
+                </tr>
+              </thead>
+              <tbody>
+                {profile.bands.map((band, index) => (
+                  <tr key={`manual-row-${index}`}>
+                    <td>{`Band ${index + 1}`}</td>
+                    <td>{mapFilterTypeForDisplay(band.filterType)}</td>
+                    <td>{`${Math.round(band.fcHz)} Hz`}</td>
+                    <td>{`${formatSignedDb(band.gainDb)} dB`}</td>
+                    <td>{formatQ(band.q)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
         {/* Settings Display */}
         <div className="settings-display">
           <h3>Current Settings</h3>
@@ -82,6 +111,23 @@ export default function EQControlPanel({ profile, onUpdate }: EQControlPanelProp
       </div>
     </div>
   );
+}
+
+function mapFilterTypeForDisplay(type: BandSettings['filterType']): string {
+  if (type === 'PK') return 'PEAK';
+  if (type === 'LSC') return 'LOW_SHELF';
+  return 'HIGH_SHELF';
+}
+
+function formatSignedDb(value: number): string {
+  const rounded = Math.round(value * 10) / 10;
+  if (rounded > 0) return `+${rounded.toFixed(1)}`;
+  return rounded.toFixed(1);
+}
+
+function formatQ(value: number): string {
+  const rounded = Math.round(value * 100) / 100;
+  return rounded.toFixed(2);
 }
 
 interface BandControlProps {

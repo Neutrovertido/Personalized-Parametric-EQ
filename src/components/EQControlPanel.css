@@ -75,6 +75,63 @@
   gap: 20px;
 }
 
+/* Manual Table */
+.manual-table-section {
+  margin-bottom: 30px;
+  padding: 20px;
+  background-color: var(--bg-tertiary);
+  border-radius: 8px;
+}
+
+.manual-table-section h3 {
+  color: var(--accent);
+  font-size: 1.1em;
+  margin-top: 0;
+  margin-bottom: 15px;
+}
+
+.manual-table-wrapper {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background-color: var(--bg-primary);
+}
+
+.manual-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 620px;
+}
+
+.manual-table thead th {
+  text-align: left;
+  font-size: 0.9em;
+  font-weight: 700;
+  color: var(--text-primary);
+  background-color: rgba(178, 108, 255, 0.12);
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.manual-table tbody td {
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  color: var(--text-secondary);
+  font-size: 0.92em;
+}
+
+.manual-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.manual-table tbody tr:nth-child(even) {
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
+.manual-table tbody tr:hover {
+  background-color: rgba(178, 108, 255, 0.08);
+}
+
 /* Band Control */
 .band-control {
   padding: 15px;
@@ -276,6 +333,10 @@ input[type='range']:disabled::-moz-range-thumb {
 @media (max-width: 768px) {
   .eq-main-content {
     padding: 20px;
+  }
+
+  .manual-table {
+    min-width: 560px;
   }
 
   .preamp-control {
