@@ -1,6 +1,4 @@
-import React, { useState } from 'react';
 import type { EQProfile, BandSettings } from '../services/filterMath';
-import { getAudioEngine } from '../services/audioEngine';
 import { downloadEQSettings, exportEQToText } from '../services/downloadExporter';
 import FrequencyVisualization from './FrequencyVisualization';
 import './EQControlPanel.css';
@@ -11,25 +9,6 @@ interface EQControlPanelProps {
 }
 
 export default function EQControlPanel({ profile, onUpdate }: EQControlPanelProps) {
-  const audioEngine = getAudioEngine();
-  const [isPlaying, setIsPlaying] = useState(false);
-
-  const handlePlayPause = () => {
-    if (isPlaying) {
-      audioEngine.stop();
-      setIsPlaying(false);
-    } else {
-      audioEngine.resumeAudioContext();
-      audioEngine.play();
-      setIsPlaying(true);
-    }
-  };
-
-  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const volume = parseFloat(e.target.value);
-    audioEngine.setMasterVolume(volume);
-  };
-
   const handlePreampChange = (newGain: number) => {
     const newProfile = { ...profile, preamp: newGain };
     onUpdate(newProfile);
@@ -53,27 +32,6 @@ export default function EQControlPanel({ profile, onUpdate }: EQControlPanelProp
         <div className="visualization-section">
           <h3>Frequency Response</h3>
           <FrequencyVisualization profile={profile} />
-        </div>
-
-        {/* Player Controls */}
-        <div className="player-controls">
-          <button
-            className={`play-button ${isPlaying ? 'playing' : ''}`}
-            onClick={handlePlayPause}
-          >
-            {isPlaying ? '⏸️ Pause' : '▶️ Play'}
-          </button>
-          <div className="volume-control">
-            <label>Volume:</label>
-            <input
-              type="range"
-              min="0"
-              max="1"
-              step="0.01"
-              defaultValue={audioEngine.getMasterVolume()}
-              onChange={handleVolumeChange}
-            />
-          </div>
         </div>
 
         {/* Preamp Control */}
