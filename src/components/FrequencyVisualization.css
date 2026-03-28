@@ -1,0 +1,19 @@
+/* Frequency Visualization Styling */
+
+.frequency-visualization {
+  width: 100%;
+  height: auto;
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px;
+}
+
+.visualization-canvas {
+  width: 100%;
+  height: auto;
+  display: block;
+  min-height: 350px;
+  background-color: #0a0a0a;
+  border-radius: 4px;
+}

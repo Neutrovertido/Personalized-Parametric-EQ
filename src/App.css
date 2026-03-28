@@ -1,0 +1,152 @@
+/* Main App Styling */
+:root {
+  --bg-primary: #0a0a0a;
+  --bg-secondary: #1a1a1a;
+  --bg-tertiary: #2a2a2a;
+  --text-primary: #ffffff;
+  --text-secondary: #b0b0b0;
+  --accent: #4dd0e1;
+  --accent-dark: #0097a7;
+  --accent-light: #80deea;
+  --border: #333333;
+  --success: #4caf50;
+  --warning: #ff9800;
+  --error: #f44336;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 0;
+  line-height: 1.6;
+}
+
+.app {
+  width: 100%;
+  min-height: 100vh;
+  background-color: var(--bg-primary);
+}
+
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Sample Select Screen */
+.sample-select-screen {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+}
+
+.sample-select-screen .container {
+  max-width: 600px;
+  text-align: center;
+}
+
+.sample-select-screen h1 {
+  font-size: 3em;
+  margin: 0 0 10px 0;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.sample-select-screen > .container > p {
+  font-size: 1.2em;
+  color: var(--text-secondary);
+  margin: 0 0 40px 0;
+}
+
+.sample-selector {
+  margin-top: 40px;
+}
+
+.button-group {
+  display: flex;
+  gap: 20px;
+  flex-direction: column;
+  align-items: center;
+}
+
+.primary-button {
+  padding: 16px 40px;
+  font-size: 1.1em;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+  color: var(--bg-primary);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  min-width: 250px;
+}
+
+.primary-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(77, 208, 225, 0.4);
+}
+
+.primary-button:active {
+  transform: translateY(0);
+}
+
+.info-text {
+  color: var(--text-secondary);
+  font-size: 0.9em;
+  margin-top: 20px;
+}
+
+/* Results Screen */
+.results-screen {
+  padding-top: 40px;
+  padding-bottom: 40px;
+}
+
+.results-screen h2 {
+  text-align: center;
+  font-size: 2.5em;
+  margin-bottom: 40px;
+  color: var(--accent);
+}
+
+.reset-button {
+  display: block;
+  margin: 40px auto 0;
+  padding: 12px 30px;
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  border: 2px solid var(--accent);
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1em;
+  transition: all 0.3s ease;
+}
+
+.reset-button:hover {
+  background-color: var(--accent);
+  color: var(--bg-primary);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(77, 208, 225, 0.3);
+}
+
+/* Buttons */
+button {
+  font-family: inherit;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
