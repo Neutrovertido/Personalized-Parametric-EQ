@@ -33,7 +33,7 @@ export class AudioEngine {
     
     // Create master gain node
     this.masterGain = this.audioContext.createGain();
-    this.masterGain.gain.value = 0.8; // Prevent clipping
+    this.masterGain.gain.value = 0.15; // Default output level: 15%
     
     // Wire: preamp -> filters -> master -> destination
     this.preampGain.connect(this.biquadFilters[0]);

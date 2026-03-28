@@ -1,4 +1,3 @@
-import React from 'react';
 import type { QuizQuestion as QuizQuestionType } from '../services/quizDefinition';
 import { getAudioEngine } from '../services/audioEngine';
 import './QuizQuestion.css';
@@ -15,24 +14,13 @@ export default function QuizQuestion({
   onSelectVariation,
 }: QuizQuestionProps) {
   const audioEngine = getAudioEngine();
-  const [playingVariation, setPlayingVariation] = React.useState<number | null>(null);
 
-  const handlePlayVariation = (index: number) => {
-    // For now, update the EQ and play
+  const handleSelectVariation = (index: number) => {
+    // Clicking a tile both selects and previews that EQ variation.
     const profile = question.variations[index].eqProfile;
     audioEngine.updateProfile(profile);
     audioEngine.resumeAudioContext();
     audioEngine.play();
-    setPlayingVariation(index);
-  };
-
-  const handleStopVariation = () => {
-    audioEngine.stop();
-    setPlayingVariation(null);
-  };
-
-  const handleSelectVariation = (index: number) => {
-    handlePlayVariation(index);
     onSelectVariation(index);
   };
 
@@ -49,33 +37,10 @@ export default function QuizQuestion({
             key={index}
             className={`variation-card ${
               selectedAnswer === index ? 'selected' : ''
-            } ${playingVariation === index ? 'playing' : ''}`}
+            }`}
             onClick={() => handleSelectVariation(index)}
           >
             <div className="variation-label">{variation.label}</div>
-            <div className="variation-controls">
-              {playingVariation === index ? (
-                <button
-                  className="play-button playing"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleStopVariation();
-                  }}
-                >
-                  ⏸️ Stop
-                </button>
-              ) : (
-                <button
-                  className="play-button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handlePlayVariation(index);
-                  }}
-                >
-                  ▶️ Play
-                </button>
-              )}
-            </div>
             {selectedAnswer === index && (
               <div className="selected-indicator">✓ Selected</div>
             )}
@@ -84,7 +49,7 @@ export default function QuizQuestion({
       </div>
 
       <div className="quiz-instructions">
-        <p>Click a variation to hear it, then select your favorite</p>
+        <p>Click a variation tile to preview and select it</p>
       </div>
     </div>
   );

@@ -4,6 +4,7 @@
  */
 
 import type { EQProfile } from './filterMath';
+import { generateFrequencyResponse } from './filterMath';
 
 export interface QuizQuestion {
   id: number;
@@ -440,6 +441,29 @@ function autoAssignQAndFilters(profile: EQProfile): void {
 }
 
 /**
+ * Set a safe preamp based on the final EQ curve so boosted regions do not clip.
+ * Targets approximately 1 dB of peak headroom.
+ */
+function autoAssignPreampForHeadroom(profile: EQProfile): void {
+  const originalPreamp = profile.preamp;
+  profile.preamp = 0;
+
+  const response = generateFrequencyResponse(profile, 48000, 512);
+  const maxBoostDb = response.reduce((max, value) => Math.max(max, value), -Infinity);
+
+  const targetPeakDb = -1.0;
+  const recommendedPreamp = Math.min(0, targetPeakDb - maxBoostDb);
+
+  // Keep inside UI control range.
+  profile.preamp = Math.round(clamp(recommendedPreamp, -12, 0) * 10) / 10;
+
+  // Preserve any intentional lower preamp if it was already more conservative.
+  if (originalPreamp < profile.preamp) {
+    profile.preamp = originalPreamp;
+  }
+}
+
+/**
  * Derive EQ profile from quiz answers
  * @param answers Array of answer indices (0-3 for A-D) for each question
  * @returns Blended EQ profile based on selected variations
@@ -474,6 +498,7 @@ export function deriveEQFromQuiz(answers: number[]): EQProfile {
 
   // Auto-design filter topology and Q after quiz, before manual fine tuning.
   autoAssignQAndFilters(resultProfile);
+  autoAssignPreampForHeadroom(resultProfile);
 
   return resultProfile;
 }

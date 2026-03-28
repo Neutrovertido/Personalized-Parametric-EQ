@@ -56,65 +56,11 @@
   box-shadow: 0 8px 24px rgba(178, 108, 255, 0.3);
 }
 
-.variation-card.playing {
-  animation: pulse 0.6s ease-in-out infinite;
-}
-
-@keyframes pulse {
-  0%, 100% {
-    box-shadow: 0 8px 16px rgba(178, 108, 255, 0.2);
-  }
-  50% {
-    box-shadow: 0 8px 24px rgba(178, 108, 255, 0.4);
-  }
-}
-
 .variation-label {
   font-size: 2em;
   font-weight: bold;
   color: var(--accent);
-  margin-bottom: 10px;
-}
-
-.variation-controls {
-  display: flex;
-  gap: 10px;
-  justify-content: center;
-  width: 100%;
-  margin-bottom: 10px;
-}
-
-.play-button {
-  padding: 8px 16px;
-  background-color: var(--accent-dark);
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 0.9em;
-  font-weight: bold;
-  transition: all 0.3s ease;
-  flex: 1;
-  max-width: 120px;
-}
-
-.play-button:hover:not(.playing) {
-  background-color: var(--accent);
-  transform: scale(1.05);
-}
-
-.play-button.playing {
-  background-color: var(--accent);
-  animation: pulse-button 0.6s ease-in-out infinite;
-}
-
-@keyframes pulse-button {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.7;
-  }
+  margin-bottom: 0;
 }
 
 .selected-indicator {
