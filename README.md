@@ -1,73 +1,91 @@
-# React + TypeScript + Vite
+# Personalized Parametric EQ
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+PPEQ is a web app that builds a custom 10-band parametric EQ profile based on listening preferences.
 
-Currently, two official plugins are available:
+Instead of asking traditional quiz questions, the app plays multiple EQ-processed variations of the same audio and lets the user choose what sounds best. The final EQ curve, filter types, Q factors, and preamp are then generated automatically.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## What It Does
 
-## React Compiler
+- Runs a 7-step audio preference quiz with 4 options per step
+- Derives a personalized 10-band EQ profile from user selections
+- Automatically assigns:
+  - Gain per band
+  - Filter type per band (Peak, Low Shelf, High Shelf)
+  - Q factor per band
+  - Safe default preamp to reduce clipping risk
+- Allows manual fine-tuning after quiz completion
+- Shows a real-time frequency response graph
+- Displays filter settings in a readable table
+- Exports settings to a text format compatible with manual EQ entry workflows
+- Users can either:
+  - Use the bundled default sample audio (Credits to NULLPX)
+  - Upload their own audio file
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## How To Use
 
-## Expanding the ESLint configuration
+1. Open the app.
+2. Choose default sample audio or upload your own file.
+3. Complete the 7 quiz steps by selecting preferred sound variations.
+4. Review generated EQ settings.
+5. Fine-tune preamp, gain, Q, and filter types if needed.
+6. Export settings.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Export Format
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+The app exports plain text in this style:
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```text
+Preamp: -3.3 dB
+Filter 1: ON PK Fc 90 Hz Gain -9.5 dB Q 0.25
+Filter 2: ON LSC Fc 110 Hz Gain 5.0 dB Q 0.71
+...
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Tech Stack
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+- React
+- TypeScript
+- Vite
+- Web Audio API
+- CSS
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Project Structure
+
+- src/components: UI components (quiz flow, EQ panel, graph, media bar)
+- src/services: audio engine, quiz logic, filter math, exporter
+- src/audio: bundled default audio sample
+
+## Getting Started
+
+1. Install dependencies
+
+```bash
+npm install
 ```
+
+2. Start development server
+
+```bash
+npm run dev
+```
+
+3. Build for production
+
+```bash
+npm run build
+```
+
+4. Preview production build
+
+```bash
+npm run preview
+```
+
+
+
+## Note
+### Actual perceived results depend on source material, playback chain, and listening environment.
+
+## License
+
+This project is licensed under the GPL-3.0 license.
