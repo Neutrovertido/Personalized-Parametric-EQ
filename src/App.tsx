@@ -60,6 +60,7 @@ function App() {
     setAppState('quiz');
     setCurrentQuestion(0);
     setAnswers([]);
+    audioEngine.setEQEnabled(true);
     audioEngine.updateProfile(DEFAULT_EQ_PROFILE);
     audioEngine.resumeAudioContext();
   };
@@ -89,6 +90,7 @@ function App() {
   // Reset everything
   const handleReset = () => {
     audioEngine.stop();
+    audioEngine.setEQEnabled(true);
     setAppState('sample-select');
     setCurrentQuestion(0);
     setAnswers([]);
@@ -129,7 +131,7 @@ function App() {
         </div>
       )}
 
-      <MediaControlBar fileName={selectedFileName} />
+      <MediaControlBar fileName={selectedFileName} canToggleEQ={appState === 'results'} />
     </div>
   );
 }

@@ -4,15 +4,17 @@ import './MediaControlBar.css';
 
 interface MediaControlBarProps {
   fileName: string | null;
+  canToggleEQ: boolean;
 }
 
-export default function MediaControlBar({ fileName }: MediaControlBarProps) {
+export default function MediaControlBar({ fileName, canToggleEQ }: MediaControlBarProps) {
   const audioEngine = getAudioEngine();
   const [isPlaying, setIsPlaying] = useState(audioEngine.getIsPlaying());
   const [hasAudio, setHasAudio] = useState(audioEngine.hasAudioLoaded());
   const [volume, setVolume] = useState(audioEngine.getMasterVolume());
   const [currentTime, setCurrentTime] = useState(audioEngine.getCurrentTime());
   const [duration, setDuration] = useState(audioEngine.getDuration());
+  const [eqEnabled, setEqEnabled] = useState(audioEngine.getEQEnabled());
 
   const formatTime = (seconds: number): string => {
     const safe = Number.isFinite(seconds) ? Math.max(0, Math.floor(seconds)) : 0;
@@ -27,6 +29,7 @@ export default function MediaControlBar({ fileName }: MediaControlBarProps) {
       setHasAudio(audioEngine.hasAudioLoaded());
       setCurrentTime(audioEngine.getCurrentTime());
       setDuration(audioEngine.getDuration());
+      setEqEnabled(audioEngine.getEQEnabled());
     }, 250);
 
     return () => {
@@ -66,6 +69,12 @@ export default function MediaControlBar({ fileName }: MediaControlBarProps) {
     setCurrentTime(value);
   };
 
+  const onToggleEQ = () => {
+    const next = !audioEngine.getEQEnabled();
+    audioEngine.setEQEnabled(next);
+    setEqEnabled(next);
+  };
+
   return (
     <footer className="media-control-bar" role="contentinfo" aria-label="Media controls">
       <div className="media-track">
@@ -103,6 +112,22 @@ export default function MediaControlBar({ fileName }: MediaControlBarProps) {
       </div>
 
       <div className="media-volume-group">
+        {canToggleEQ && (
+          <label className={`eq-switch ${!hasAudio ? 'disabled' : ''}`} title="Toggle custom EQ on or off">
+            <span className="eq-switch-label">EQ</span>
+            <input
+              type="checkbox"
+              checked={eqEnabled}
+              onChange={onToggleEQ}
+              disabled={!hasAudio}
+              aria-label="Enable custom EQ"
+            />
+            <span className="eq-switch-track" aria-hidden="true">
+              <span className="eq-switch-thumb" />
+            </span>
+            <span className="eq-switch-state">{eqEnabled ? 'On' : 'Off'}</span>
+          </label>
+        )}
         <label htmlFor="global-volume">Volume</label>
         <div className="media-volume-row">
           <input

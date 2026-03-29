@@ -14,6 +14,7 @@ export class AudioEngine {
   private audioSource: AudioBufferSourceNode | null = null;
   private audioBuffer: AudioBuffer | null = null;
   private currentProfile: EQProfile = structuredClone(DEFAULT_EQ_PROFILE);
+  private eqEnabled = true;
   private isPlaying = false;
   private playbackStartTime = 0;
   private playbackOffset = 0;
@@ -198,9 +199,37 @@ export class AudioEngine {
   }
 
   /**
+   * Enable/disable EQ processing for A/B listening.
+   */
+  setEQEnabled(enabled: boolean): void {
+    this.eqEnabled = enabled;
+    this.applyProfile();
+  }
+
+  /**
+   * Get current EQ processing state.
+   */
+  getEQEnabled(): boolean {
+    return this.eqEnabled;
+  }
+
+  /**
    * Apply current profile to all biquad filters
    */
   private applyProfile(): void {
+    if (!this.eqEnabled) {
+      // Bypass mode: keep level neutral and zero out all filter effect.
+      this.preampGain.gain.value = 1;
+      for (let i = 0; i < this.biquadFilters.length; i++) {
+        const filter = this.biquadFilters[i];
+        filter.type = 'peaking';
+        filter.frequency.value = this.currentProfile.bands[i]?.fcHz ?? 1000;
+        filter.Q.value = 0.707;
+        filter.gain.value = 0;
+      }
+      return;
+    }
+
     // Update preamp
     this.preampGain.gain.value = Math.pow(10, this.currentProfile.preamp / 20);
     
